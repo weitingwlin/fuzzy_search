@@ -30,7 +30,9 @@ In order to solve this "or something like that" problem. I plan to build a "fuzz
 
 I plan to used web scraping to get the database (e.g. book listing on audible.com), and create user interface using Django framework. The goal is to optimize the application, so the search result will be as similar to what the user might have in mind. 
 
-## Preliminary results
+## Preliminary results 
+
+#### ([See the results here](https://github.com/weitingwlin/fuzzy_search/blob/master/Fuzzy_search.md))
 
 Base a preliminary database of ~300 book listing (bestsellers in three category) on audible.com, I created python function that can return titles similar to a search string (what user think is the title). 
 
@@ -39,5 +41,5 @@ I presented two cases below where there is no match between the words in the sea
 I also show here clustering of book titles based on meaning and a potential case of "book suggestion". I visualized the similarity of some books based on the meaning of titles (and an anecdotal result that there is no simple way to distinguish books of "Erotica", "Military", or "Sci-Fi" base only on the titles).
 
 ## code
-** Fuzzy_search.ipynb: demo of the fuzzy search
-** Books: exploratory data analysis
+* Fuzzy_search.ipynb: demo of the fuzzy search
+* Books: exploratory data analysis
