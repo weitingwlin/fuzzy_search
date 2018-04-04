@@ -1,0 +1,31 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+    <title> Fuzzy Search</title>
+{% endblock %}
+
+
+{% block navbar %}
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/index">Fuzzy Search</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li><a href="/app">App</a></li>
+        <li><a href="/info">Info</a></li>
+      </ul>
+    </div>
+  </nav>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+{% block app_content %}
+
+<!-- page specific contents goes here -->
+
+{% endblock %}
+</div>
+{% endblock %}

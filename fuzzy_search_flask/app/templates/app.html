@@ -1,0 +1,47 @@
+
+{% extends "base.html" %}
+{% block app_content %}
+ {{ form.csrf_token }}
+
+
+  <h1>Fuzzy search</h2>
+
+      <form class="form-group" action="" method="post">
+          <p>
+            {{ form.hidden_tag() }}
+              {{ form.searchstring.label }}
+              <br>
+              {{ form.searchstring(size=64) }}
+          </p>
+          <br>
+          <button type="button" class="btn">{{ form.submit() }}</button>
+      </form>
+
+
+          <form class="form-group" action="" method="post">
+          <label class="checkbox-inline">
+              <input type="checkbox" value="">{{ form.fiction() }} {{ form.fiction.label }}
+          </label>
+          <label class="checkbox-inline">
+              <input type="checkbox" value="">{{ form.history() }} {{ form.history.label }}
+            </label>
+      <!-- <div> -->
+
+     <!-- </div> -->
+      </form>
+
+      <div>
+        <h3>
+          {% for s in strout %}
+              {{ s }}<br>
+          {% endfor %}
+        </h3>
+      </div>
+
+
+      <form method="post">
+          <h3>Print {{ N_out }} results</h3>
+          <input type="submit" value="more" >
+      </form>
+
+{% endblock %}
