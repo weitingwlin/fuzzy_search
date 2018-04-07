@@ -14,11 +14,13 @@ from bokeh.models import ColumnDataSource, Range1d, LabelSet, Label
 
 c_dict = dill.load( open("app/data/morecommon_dict.pkl","rb"))
 vocab = c_dict.keys()
-books = pd.read_csv('app/data/fiction.csv')
+books = pd.read_csv('app/data/fiction_500.csv')
 
 def search_app(S, n = 5):
-    res, _ = fuzzy_find2(S, books, maxshow=n)
-    return res
+    titles, ind = fuzzy_find2(S, books, maxshow=n)
+    links = books['link'][ind]
+    zipped = [[t,l] for t, l in zip(titles, links)]
+    return zipped
 
 
 ##### functions below
@@ -147,7 +149,7 @@ def string_distance(Slist, limit = 5, placeholder = None):
     return dist
 
 
-def suggestion_map(mytitle, shelf, n_init =10, maxshow=20):
+def suggestion_map(mytitle, shelf, n_init =10, maxshow=15):
     # 1. get a list of suggested books
     thresh = 5
     S_list, S_indices = fuzzy_find2(mytitle, shelf, maxshow = maxshow, threshhold = thresh)

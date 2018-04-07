@@ -34,8 +34,9 @@
           <div class="col-md-4">
       <!-- <div> -->
               <h3>
-                  {% for s in strout %}
-                      {{ s }}<br>
+                  {% for res in strout %}
+                    <a href={{ res[1] }} target="_blank">  {{ res[0] }}</a>
+                      <br>
                   {% endfor %}
               </h3>
           </div>

@@ -20,12 +20,14 @@ def my_app():
     Sup = ""
     session['n_out'] = 5
     if form.validate_on_submit():
-        Sup = search_app(form.searchstring.data, 5)
-    print(session['n_out'])
+        zipped = search_app(form.searchstring.data, 5)
+        # print(zipped)
+    # print(session['n_out'])
     p = suggestion_plot(form.searchstring.data)
     script, div = components(p)
 
-    return render_template('app.html', form = form, strout = Sup, N_out = session['n_out'],
+    return render_template('app.html', form = form, strout = zipped, \
+                           N_out = session['n_out'],
                         script=script, div=div,  bokeh_js=CDN.render_js())
 
 @app.route('/app/add', methods=['GET', 'POST'])
