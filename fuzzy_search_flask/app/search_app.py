@@ -7,13 +7,17 @@ import dill
 from itertools import product, combinations
 from nltk.corpus import stopwords
 from scipy.stats import rankdata
+from sklearn import manifold
+from numpy.random import random
+from bokeh.plotting import figure,  show, output_file
+from bokeh.models import ColumnDataSource, Range1d, LabelSet, Label
 
 c_dict = dill.load( open("app/data/morecommon_dict.pkl","rb"))
 vocab = c_dict.keys()
 books = pd.read_csv('app/data/fiction.csv')
 
 def search_app(S, n = 5):
-    res = fuzzy_find2(S, books, maxshow=n)
+    res, _ = fuzzy_find2(S, books, maxshow=n)
     return res
 
 
@@ -130,4 +134,63 @@ def fuzzy_find2(mytitle, shelf, maxshow = 10, threshhold = 5):
         fuzzy = np.where(rankF <= maxshow)[0]
 
 #     return shelf["title"][fuzzy], dist[fuzzy]
-    return list(shelf["title"][fuzzy])
+    return list(shelf["title"][fuzzy]), fuzzy
+
+def string_distance(Slist, limit = 5, placeholder = None):
+
+    N = len(Slist)
+    dist = np.zeros((N,N))
+    for i in range(N):
+        for j in range(i,N):
+            dist[i,j] = compare_strs(Slist[i], Slist[j], limit=limit, placeholder=placeholder)
+            dist[j,i] = dist[i,j]
+    return dist
+
+
+def suggestion_map(mytitle, shelf, n_init =10, maxshow=20):
+    # 1. get a list of suggested books
+    thresh = 5
+    S_list, S_indices = fuzzy_find2(mytitle, shelf, maxshow = maxshow, threshhold = thresh)
+    # 2. calculate distance matrix
+    Dist = string_distance(S_list + [mytitle], limit = 5, placeholder = None)
+    # 3. calculate Y
+    Y = manifold.MDS(n_components= 2, n_init =  n_init, dissimilarity='precomputed')\
+                     .fit_transform(Dist)
+    # 4. get notation
+    notation = S_list + [mytitle]
+    similarity = thresh - Dist[-1,:]
+    return Y, notation, similarity
+
+def plot_2D(Yin = None, notation = None, sizes = 1):
+    # p = figure(tools='save')
+    # p.scatter(Y[:,0], Y[:,1], fill_alpha=0.6)#,
+    xmock = max(Yin[:,0]) + 2
+    ymock = max(Yin[:,1]) + 0.5
+    Y = np.concatenate((np.array([xmock, ymock]).reshape(1,2),  Yin), axis=0)
+    #
+    sizes =  np.concatenate((np.array([0]),  sizes), axis=0)
+    notation =  np.concatenate((np.array([""]),  notation), axis=0)
+
+
+    color = ["#1f1b99" for i in sizes]
+    color[-1] = "#f442c5"
+    source = ColumnDataSource(data=dict(Dim1 = Y[:,0], Dim2 = Y[:,1],
+                                        names = notation, sizes = sizes * 0.1,\
+                                        colors = color))
+    p = figure(title='Dist. of 10th Grade Students at Lee High')\
+                # x_range=Range1d(-5, 5), y_range=Range1d(-5, 5))
+               # , x_range=Range1d(140, 275))
+    p.scatter(x='Dim1', y='Dim2', source=source, radius='sizes',\
+              fill_color='colors', fill_alpha=0.6,\
+              line_color=None)
+    p.xaxis[0].axis_label = 'Weight (lbs)'
+    p.yaxis[0].axis_label = 'Height (in)'
+    labels = LabelSet(x='Dim1', y='Dim2', text='names', level='glyph',
+              x_offset=0, y_offset=0.05, source=source, render_mode='canvas')
+    p.add_layout(labels)
+
+    return p
+
+def suggestion_plot(mytitle):
+    Y, notation, sizes = suggestion_map(mytitle, books)
+    return plot_2D(Y, notation, sizes)

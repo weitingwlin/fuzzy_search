@@ -3,7 +3,7 @@
 {% block app_content %}
  {{ form.csrf_token }}
 
-
+   {{ bokeh_js|safe}}
   <h1>Fuzzy search</h2>
 
       <form class="form-group" action="" method="post">
@@ -17,31 +17,37 @@
           <button type="button" class="btn">{{ form.submit() }}</button>
       </form>
 
-
-          <form class="form-group" action="" method="post">
+      <form class="form-group" action="" method="post">
           <label class="checkbox-inline">
               <input type="checkbox" value="">{{ form.fiction() }} {{ form.fiction.label }}
           </label>
           <label class="checkbox-inline">
               <input type="checkbox" value="">{{ form.history() }} {{ form.history.label }}
             </label>
-      <!-- <div> -->
-
-     <!-- </div> -->
       </form>
 
-      <div>
-        <h3>
-          {% for s in strout %}
-              {{ s }}<br>
-          {% endfor %}
-        </h3>
+
+
+
+
+      <div class="row">
+          <div class="col-md-4">
+      <!-- <div> -->
+              <h3>
+                  {% for s in strout %}
+                      {{ s }}<br>
+                  {% endfor %}
+              </h3>
+          </div>
+          <div class="col-md-8">
+              {{ div|safe }}
+              {{ script|safe }}
+          </div>
       </div>
 
-
-      <form method="post">
+      <!-- <form method="post">
           <h3>Print {{ N_out }} results</h3>
           <input type="submit" value="more" >
-      </form>
+      </form> -->
 
 {% endblock %}
